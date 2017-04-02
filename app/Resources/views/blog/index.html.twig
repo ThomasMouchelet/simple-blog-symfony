@@ -4,7 +4,7 @@
 
     {% block navitems %}
         <li class="nav-item">
-            {% if is_granted( 'ROLE_ADMIN', 'ROLE_AUTEUR' ) %}
+            {% if is_granted( 'ROLE_ADMIN', 'ROLE_AUTEUR') %}
                 <a class="nav-link" href="/admin">Admin</a>
             {% else %}
                 <a class="nav-link" href="/login">login</a>

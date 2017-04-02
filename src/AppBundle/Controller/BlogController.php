@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+
 class BlogController extends Controller
 {
     /**
@@ -31,14 +32,7 @@ class BlogController extends Controller
      */
     public function indexAction()
     {
-        /*$test = new Article();
-        $test->setTittle('Titre')
-             ->setContent('Lorem dsffsdfsdfsd')
-             ->setPublishDate(new \DateTime());*/
         $em = $this->getDoctrine()->getManager();
-
-        /*$em->persist($test);
-        $em->flush();*/
 
         $repository = $em->getRepository(Article::class);
         $articles = $repository->findAll();
@@ -88,9 +82,9 @@ class BlogController extends Controller
 
     /**
      * @Route("/article_delete", name="article_delete")
-     * @Security("has_role('ROLE_AUTEUR') and has_role('ROLE_AUTRE')")
+     * @Security("has_role('ROLE_ADMIN')")
      */
-    public function deleteAction()
+    public function deleteAction(Request $request)
     {
         $id = $_GET['id'];
 
@@ -101,13 +95,9 @@ class BlogController extends Controller
         $em->remove($article);
         $em->flush();
 
-        $articles = $repository->findAll();
+        $request->getSession()->getFlashBag()->add('success', 'Article supprimé.');
 
-        $templating = $this->get('templating');
-
-        $html = $templating->render('blog/admin/index.html.twig',compact('articles'));
-
-        return new Response($html);
+        return $this->redirectToRoute('admin');
     }
 
     /**
@@ -158,7 +148,7 @@ class BlogController extends Controller
                 $em->persist($advert);
                 $em->flush();
 
-                $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+                $request->getSession()->getFlashBag()->add('success', 'Article bien enregistrée.');
 
                 // On redirige vers la page de visualisation de l'annonce nouvellement créée
                 return $this->redirectToRoute('admin', array('id' => $advert->getId()));
