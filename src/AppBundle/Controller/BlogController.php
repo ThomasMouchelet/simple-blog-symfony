@@ -109,15 +109,13 @@ class BlogController extends Controller
             $id = $_GET['id'];
             $em = $this->getDoctrine()->getManager();
             $repository = $em->getRepository(Article::class);
-            $advert = $repository->find($id);
-
+            $article = $repository->find($id);
             $request->getSession()->getFlashBag()->add('success', 'Article modifié.');
         }else{
-            $advert = new Article();
-            $request->getSession()->getFlashBag()->add('success', 'Article ajouté.');
+            $article = new Article();
         }
 
-        $form = $this->get('form.factory')->createBuilder(FormType::class, $advert)
+        $form = $this->get('form.factory')->createBuilder(FormType::class, $article)
             ->add('tittle',     TextType::class)
             ->add('content',   TextareaType::class)
             ->add('envoyer',      SubmitType::class)
@@ -125,18 +123,18 @@ class BlogController extends Controller
         ;
 
         if ($request->isMethod('POST')) {
-
             $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($advert);
+                $em->persist($article);
                 $em->flush();
 
+                if (!isset($_GET['id'])){
+                    $request->getSession()->getFlashBag()->add('success', 'Article ajouté.');
+                }
 
-
-                // On redirige vers la page de visualisation de l'annonce nouvellement créée
-                return $this->redirectToRoute('admin', array('id' => $advert->getId()));
+                return $this->redirectToRoute('admin', array('id' => $article->getId()));
             }
         }
 
