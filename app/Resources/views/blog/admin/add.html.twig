@@ -9,9 +9,7 @@
 {% block content %}
     <h1>Ajouter</h1>
 
-    <form action="/admin" method="post">
-        <input type="text" name="tittle">
-        <input class="form-control" name="content">
-        <input type="submit">
-    </form>
+    <div class="well">
+        {{ form(form) }}
+    </div>
 {% endblock %}

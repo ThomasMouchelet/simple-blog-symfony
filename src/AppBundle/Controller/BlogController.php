@@ -17,6 +17,13 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 class BlogController extends Controller
 {
     /**
@@ -69,26 +76,6 @@ class BlogController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $repository = $em->getRepository(Article::class);
-
-        if (isset($_POST['content'])){
-            if (isset($_POST['id'])) {
-                $article = $repository->find($_POST['id']);
-            }else{
-                $article = new Article();
-            }
-
-            $article->setTittle($_POST['tittle'])
-                ->setContent($_POST['content']);
-
-            if (isset($_POST['id'])) {
-                $article->setEditDate(new \DateTime());
-            }else{
-                $article->setPublishDate(new \DateTime());
-            }
-
-            $em->persist($article);
-            $em->flush();
-        }
 
         $articles = $repository->findAll();
 
@@ -144,12 +131,46 @@ class BlogController extends Controller
     /**
      * @Route("/add", name="add")
      */
-    public function addtAction()
+    public function addAction(Request $request)
     {
-        $templating = $this->get('templating');
-        $html = $templating->render('blog/admin/add.html.twig');
+        // On crée un objet Advert
+        $advert = new Article();
 
-        return new Response($html);
+        // J'ai raccourci cette partie, car c'est plus rapide à écrire !
+        $form = $this->get('form.factory')->createBuilder(FormType::class, $advert)
+            ->add('tittle',     TextType::class)
+            ->add('content',   TextareaType::class)
+            ->add('envoyer',      SubmitType::class)
+            ->getForm()
+        ;
+
+        // Si la requête est en POST
+        if ($request->isMethod('POST')) {
+            // On fait le lien Requête <-> Formulaire
+            // À partir de maintenant, la variable $advert contient les valeurs entrées dans le formulaire par le visiteur
+            $form->handleRequest($request);
+
+            // On vérifie que les valeurs entrées sont correctes
+            // (Nous verrons la validation des objets en détail dans le prochain chapitre)
+            if ($form->isValid()) {
+                // On enregistre notre objet $advert dans la base de données, par exemple
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($advert);
+                $em->flush();
+
+                $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+
+                // On redirige vers la page de visualisation de l'annonce nouvellement créée
+                return $this->redirectToRoute('admin', array('id' => $advert->getId()));
+            }
+        }
+
+        // À ce stade, le formulaire n'est pas valide car :
+        // - Soit la requête est de type GET, donc le visiteur vient d'arriver sur la page et veut voir le formulaire
+        // - Soit la requête est de type POST, mais le formulaire contient des valeurs invalides, donc on l'affiche de nouveau
+        return $this->render('blog/admin/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
 }

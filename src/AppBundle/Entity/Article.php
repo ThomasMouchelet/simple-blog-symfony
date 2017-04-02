@@ -38,6 +38,12 @@ class Article
      */
     private $edit_date;
 
+    public function __construct()
+    {
+        $this->publish_date = new \Datetime();
+    }
+
+
     /**
      * Get id
      *
