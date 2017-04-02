@@ -1,22 +1,20 @@
-{% extends "base.html.twig" %}
-{% block content %}
 
-{# src/OC/UserBundle/Resources/views/Security/login.html.twig #}
+{% extends index.html.twig %}
 
-    {# S'il y a une erreur, on l'affiche dans un joli cadre #}
-    {% if error %}
-        <div class="alert alert-danger">{{ error.message }}</div>
-    {% endif %}
+{# Dans notre layout, il faut définir le block body #}
+{% block body %}
 
-    {# Le formulaire, avec URL de soumission vers la route « login_check » comme on l'a vu #}
-    <form action="{{ path('login_check') }}" method="post">
-        <label for="username">Login :</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+    {# On affiche les messages flash que définissent les contrôleurs du bundle #}
+    {% for key, messages in app.session.flashbag.all() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ key }}">
+                {{ message|trans({}, 'FOSUserBundle') }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="_password" />
-        <br />
-        <input type="submit" value="Connexion" />
-    </form>
+    {# On définit ce block, dans lequel vont venir s'insérer les autres vues du bundle #}
+    {% block fos_user_content %}
+    {% endblock fos_user_content %}
 
 {% endblock %}
