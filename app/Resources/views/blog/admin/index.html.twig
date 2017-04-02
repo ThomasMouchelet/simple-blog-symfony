@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Admin{% endblock %}
+
+    {% block navitems %}
+        <li class="nav-item">
+            <a class="nav-link" href="/">Acceuil</a>
+        </li>
+    {% endblock %}
+
+    {% block content %}
+
+        <p>Bonjour {{ app.user.username }}</p>
+        <h2>Liste des articles:</h2>
+
+        <span>{{ articles|length }} articles</span>
+        <a href="/add">
+            <button type="button" class="btn btn-outline-primary">Ajouter</button>
+        </a>
+
+        <table class="table">
+            <thead class="thead-default">
+            <tr>
+                <th>Tittle</th>
+                <th>date</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {%  for article in articles %}
+                <tr>
+                    <th>
+                        {{ article.tittle }}
+                    </th>
+                    <td>
+                        {% if article.editDate is empty %}
+                            Ajouté le: {{ article.publishDate|date('m/d/Y') }}
+                        {% else %}
+                            Edité le: {{  article.editDate|date('m/d/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/edit?id={{ article.id }}" class="align-items-end">
+                            <button type="button" class="btn btn-outline-info">Edit</button>
+                        </a>
+                    </td>
+                    <td>
+                        {% if is_granted('ROLE_AUTEUR') %}
+                            <a  href="/article_delete?id={{ article.id }}">
+                                <button type="button" class="btn btn-outline-danger">Supprimer</button>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html.twig" %}
+{% block content %}
+    <a href="/">Retour</a>
+
+    <h1>{{ article.tittle }}</h1>
+    <p>{{ article.publishDate|date('m/d/Y')  }}</p>
+    <p>{{ article.content }}</p>
+{% endblock %}

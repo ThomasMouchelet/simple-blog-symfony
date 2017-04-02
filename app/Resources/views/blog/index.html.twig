@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Accueil{% endblock %}
+
+    {% block navitems %}
+        <li class="nav-item">
+            {% if is_granted( 'ROLE_ADMIN', 'ROLE_AUTEUR' ) %}
+                <a class="nav-link" href="/admin">Admin</a>
+            {% else %}
+                <a class="nav-link" href="/login">login</a>
+            {% endif %}
+        </li>
+    {% endblock %}
+
+    {% block content %}
+        <div class="row">
+            {%  for article in articles %}
+                <article class="col-md-3">
+                    <a href="/article?id={{ article.id }}">
+                        <img src="https://lorempixel.com/200/200" alt="Card image cap">
+                    </a>
+                    <div>
+                        <a href="/article?id={{ article.id }}">
+                            <h4>{{ article.tittle }}</h4>
+                        </a>
+                        <p>
+                            {% if article.editDate is empty %}
+                                Ajouté le: {{ article.publishDate|date('m/d/Y') }}
+                            {% else %}
+                                Edité le: {{  article.editDate|date('m/d/Y') }}
+                            {% endif %}
+                        </p>
+                        <p>{{ article.content|length < 2 ? article.content : article.content|slice(0, 20) ~ '...'  }}</p>
+                        <a href="/article?id={{ article.id }}" class="btn btn-primary">Lire la suite</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% endblock %}
+

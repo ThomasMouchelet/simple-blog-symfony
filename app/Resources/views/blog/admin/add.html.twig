@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block navitems %}
+    <li class="nav-item">
+        <a class="nav-link" href="/admin">Admin</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>Ajouter</h1>
+
+    <form action="/admin" method="post">
+        <input type="text" name="tittle">
+        <input class="form-control" name="content">
+        <input type="submit">
+    </form>
+{% endblock %}
