@@ -9,11 +9,8 @@
 {% block content %}
     <h1>Editer</h1>
 
-    <form action="/admin" method="post">
-        <input type="text" name="tittle" value="{{ article.tittle }}">
-        <input class="form-control" name="content" value="{{ article.content }}">
-        <input type="text" name="id" value="{{ article.id }}" style="display: none">
-        <input type="submit">
-    </form>
+    <div class="well">
+        {{ form(form) }}
+    </div>
 
 {% endblock %}
