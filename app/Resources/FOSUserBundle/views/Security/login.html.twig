@@ -4,19 +4,24 @@
 
 {% block fos_user_content %}
     {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        </div>
     {% endif %}
 
     <form action="{{ path("fos_user_security_check") }}" method="post">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 
         <div class="form-group">
-            <label for="username">Login</label>
+            <label for="username">{{ 'security.login.username'|trans }}</label>
             <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
         </div>
 
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">{{ 'security.login.password'|trans }}</label>
             <input type="password" id="password" name="_password" required="required" />
         </div>
 
@@ -31,6 +36,5 @@
                name="_submit"
                value="{{ 'security.login.submit'|trans }}" />
     </form>
-
-    <a href="/register">s'enregistrer</a>
+    <a href="/register">S'enregistrer</a>
 {% endblock fos_user_content %}

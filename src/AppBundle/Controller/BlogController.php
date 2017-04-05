@@ -110,7 +110,6 @@ class BlogController extends Controller
             $em = $this->getDoctrine()->getManager();
             $repository = $em->getRepository(Article::class);
             $article = $repository->find($id);
-            $request->getSession()->getFlashBag()->add('success', 'Article modifié.');
         }else{
             $article = new Article();
         }
@@ -132,6 +131,8 @@ class BlogController extends Controller
 
                 if (!isset($_GET['id'])){
                     $request->getSession()->getFlashBag()->add('success', 'Article ajouté.');
+                }else{
+                    $request->getSession()->getFlashBag()->add('success', 'Article modifié.');
                 }
 
                 return $this->redirectToRoute('admin', array('id' => $article->getId()));
@@ -141,6 +142,17 @@ class BlogController extends Controller
         return $this->render('blog/admin/edit.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("/members", name="members")
+     */
+    public function membersAction()
+    {
+        $userManager = $this->get('fos_user.user_manager');
+        $users = $userManager->findUsers();
+
+        return $this->render('blog/admin/members.html.twig', array('users' =>   $users));
     }
 
 }
