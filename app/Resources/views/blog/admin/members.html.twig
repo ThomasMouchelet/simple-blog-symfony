@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h1>Liste des membres</h1>
+    <table class="table">
+        <thead class="thead-default">
+        <tr>
+            <th>login</th>
+            <th>email</th>
+            <th>Dernière connexion</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <th>
+                    <a href="/profile/edit">{{ user.username|e }}</a>
+                </th>
+                <td>
+                    {{ user.email|e }}
+                </td>
+                <td>
+                    {{ user.lastlogin|date("d/m/Y - H:m:s") }}
+                </td>
+                <td>
+                    {% for role in app.user.roles %}
+                        {{ role }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}
