@@ -9,7 +9,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Article;
-use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -153,6 +152,26 @@ class BlogController extends Controller
         $users = $userManager->findUsers();
 
         return $this->render('blog/admin/members.html.twig', array('users' =>   $users));
+    }
+
+    /**
+     * @Route("boutique" , name="boutique")
+     */
+    public function boutiqueAction(Request $request)
+    {
+        \Stripe\Stripe::setApiKey("sk_test_MpSdpgU01U7sCw6mfRq83Xdf");
+
+        if ($request->isMethod('POST')){
+            $customer = \Stripe\Customer::create(array(
+                'source' => $_POST['stripeToken'],
+                'email' => $_POST['stripeEmail']
+            ));
+        }else{
+            $customer = '';
+        }
+
+
+        return $this->render('blog/boutique.html.twig', compact('customer'));
     }
 
 }
